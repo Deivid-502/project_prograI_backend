@@ -1,13 +1,19 @@
 package com.example.backend.model;
 
+/**
+ * Modelo de usuario tal como está en la base de datos.
+ */
 public class User {
     private int id;
     private String username;
     private String password;
 
-    public User() { }
+    public User() {}
+
     public User(int id, String u, String p) {
-        this.id = id; this.username = u; this.password = p;
+        this.id = id;
+        this.username = u;
+        this.password = p;
     }
 
     public int getId() { return id; }
