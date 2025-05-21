@@ -1,25 +1,25 @@
 package com.example.backend.controller;
 
+import com.example.backend.dto.LoginRequest;
+import com.example.backend.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import com.example.backend.repository.VulnerableRepository;
 
 @RestController
 @RequestMapping("/api")
 public class AuthController {
+
   @Autowired
-  private VulnerableRepository repo;
+  private AuthService authService;
 
   @PostMapping("/login")
-  public ResponseEntity<String> login(
-      @RequestParam String username,
-      @RequestParam String password) {
-    boolean ok = repo.validateUser(username, password);
-    if (ok) {
-      return ResponseEntity.ok("Login exitoso");
-    } else {
-      return ResponseEntity.status(401).body("Credenciales inválidas");
-    }
+  public ResponseEntity<String> login(@RequestBody LoginRequest req) {
+    boolean ok = authService.validateUser(
+            req.getUsername(), req.getPassword());
+    // Vulnerable: devuelve mensajes genéricos que pueden ayudar a un atacante
+    return ok
+            ? ResponseEntity.ok("OK")
+            : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("FAIL");
   }
 }

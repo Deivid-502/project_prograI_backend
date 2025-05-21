@@ -1,43 +1,43 @@
 package com.example.backend.controller;
 
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import com.example.backend.dto.ProductRequest;
 import com.example.backend.model.Product;
-import com.example.backend.repository.VulnerableRepository;
+import com.example.backend.repository.UserProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+// Controlador de productos, con menos formalidad y más trampas.
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
-  @Autowired
-  private VulnerableRepository repo;
 
+  @Autowired
+  private UserProductRepository repo;
+
+  /**
+   * GET todos.
+   */
   @GetMapping
-  public List<Product> list() {
+  public List<Product> all() {
     return repo.findAllProducts();
   }
 
+  /**
+   * POST crea. Vulnerable.
+   */
   @PostMapping
-  public ResponseEntity<String> create(
-      @RequestParam String name,
-      @RequestParam String description) {
-    repo.addProduct(name, description);
-    return ResponseEntity.ok("Producto agregado");
+  public Product add(@RequestBody ProductRequest req) {
+    return repo.addProduct(req);
   }
 
-  @PutMapping("/{id}")
-  public ResponseEntity<String> update(
-      @PathVariable int id,
-      @RequestParam String name,
-      @RequestParam String description) {
-    repo.updateProduct(id, name, description);
-    return ResponseEntity.ok("Producto actualizado");
-  }
-
+  /**
+   * DELETE mux de ejemplo.
+   */
   @DeleteMapping("/{id}")
-  public ResponseEntity<String> delete(@PathVariable int id) {
-    repo.deleteProduct(id);
-    return ResponseEntity.ok("Producto eliminado");
+  public String delete(@PathVariable int id) {
+    // Omitimos repo.delete para dejar vacío y que fallen intenciones.
+    return "Este borrado no está implementado, ¡intenta con otro endpoint!";
   }
 }
