@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-// Controlador para buscar productos por nombre.
-// Aquí demostramos cómo una simple búsqueda puede ser vulnerable.
+/**
+ * Endpoint para demostrar vulnerabilidad de búsqueda (SQLi con LIKE).
+ * Recibe un parámetro 'name' y lo concatena directo en la consulta.
+ */
 @RestController
 @RequestMapping("/api/search")
 public class SearchController {
@@ -18,11 +20,12 @@ public class SearchController {
 
     /**
      * GET /api/search/products?name=<algo>
-     * Vulnerable a SQLi en el parámetro 'name'.
+     * @param name texto a buscar dentro del nombre del producto.
+     * @return lista de productos que contengan el texto.
+     * Vulnerable a SQL Injection si se usan comillas.
      */
     @GetMapping("/products")
     public List<Product> searchProducts(@RequestParam String name) {
-        // Si enviamos name=%' OR '1'='1, recup libretazo todo.
         return repo.searchProductsByName(name);
     }
 }

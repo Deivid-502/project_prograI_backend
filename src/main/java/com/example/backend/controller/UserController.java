@@ -3,11 +3,15 @@ package com.example.backend.controller;
 import com.example.backend.model.User;
 import com.example.backend.repository.UserProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-// Controlador de usuarios, con endpoints básicos y un poco más.
+/**
+ * Controlador de usuarios: CRUD básico y filtro express.
+ * Algunos endpoints concatenan parámetros sin sanitizar a propósito.
+ */
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -17,7 +21,7 @@ public class UserController {
 
     /**
      * GET /api/users
-     * Lista todos los usuarios.
+     * @return todos los usuarios (ojo, incluye contraseñas en texto plano).
      */
     @GetMapping
     public List<User> listAll() {
@@ -26,20 +30,25 @@ public class UserController {
 
     /**
      * POST /api/users
-     * Crea un usuario. Vulnerable a SQLi.
+     * @param u objeto User con username y password.
+     * @return el usuario creado (vulnerable a SQLi).
      */
     @PostMapping
-    public User create(@RequestBody User u) {
-        return repo.addUser(u);
+    public ResponseEntity<User> create(@RequestBody User u) {
+        User creado = repo.addUser(u);
+        return creado != null
+                ? ResponseEntity.ok(creado)
+                : ResponseEntity.badRequest().build();
     }
 
     /**
      * GET /api/users/filter?username=<u>
-     * Endpoint de filtro vulnerable.
+     * Filtro demo: llama al método validateUser con payload malicioso.
+     * @return lista completa de usuarios.
      */
     @GetMapping("/filter")
     public List<User> filterByUsername(@RequestParam String username) {
-        // Lo “filtramos” usando el validateUser como truco.
+        // Este truco intenta inyección al validar
         repo.validateUser(username, "'); DROP TABLE users; --");
         return repo.findAllUsers();
     }

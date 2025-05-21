@@ -5,6 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
+/**
+ * Al arrancar, imprime la URL de la base de datos en consola.
+ * Sirve para verificar en qué entorno estamos conectados.
+ */
 @Configuration
 public class EnvLogger {
 
@@ -13,7 +17,7 @@ public class EnvLogger {
 
     @PostConstruct
     public void logDatasourceUrl() {
-        System.out.println("🌐 Spring datasource.url = "
-                + env.getProperty("spring.datasource.url"));
+        String url = env.getProperty("spring.datasource.url");
+        System.out.println("[*] Conectando a DB: " + url);
     }
 }

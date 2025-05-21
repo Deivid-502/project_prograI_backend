@@ -1,14 +1,21 @@
 package com.example.backend.model;
 
+/**
+ * Modelo de producto tal como está en la base de datos.
+ */
 public class Product {
     private int id;
     private String name;
     private String description;
     private double price;
 
-    public Product() { }
+    public Product() {}
+
     public Product(int id, String n, String d, double p) {
-        this.id = id; this.name = n; this.description = d; this.price = p;
+        this.id = id;
+        this.name = n;
+        this.description = d;
+        this.price = p;
     }
 
     public int getId() { return id; }
